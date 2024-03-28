@@ -3,6 +3,22 @@ import Joi from "joi";
 /* Import constants */
 import ERROR_CODE from "../../constants/ErrorCode";
 
+export const loginSchema = Joi.object({
+  username: Joi.string().min(6).required().messages({
+    'string.min': ERROR_CODE.AUTH_USERNAME_MIN,
+    'string.empty': ERROR_CODE.AUTH_MISSING_USERNAME,
+    'any.required': ERROR_CODE.AUTH_MISSING_USERNAME
+  }),
+  password: Joi.string().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_PASSWORD,
+    'any.required': ERROR_CODE.AUTH_MISSING_PASSWORD,
+  }),
+  two_fa_code: Joi.string().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_TWO_FACTOR_CODE,
+    'any.required': ERROR_CODE.AUTH_MISSING_TWO_FACTOR_CODE
+  })
+})
+
 export const registerSchema = Joi.object({
   fullname: Joi.string().min(0).optional(),
   username: Joi.string().min(6).required().messages({
@@ -18,7 +34,7 @@ export const registerSchema = Joi.object({
   country_code: Joi.string().min(0).optional(),
   password: Joi.string().required().messages({
     'string.empty': ERROR_CODE.AUTH_MISSING_PASSWORD,
-    'any.required': ERROR_CODE.AUTH_MISSING_PASSWORD,
+    'any.required': ERROR_CODE.AUTH_MISSING_PASSWORD
   }),
   referral_code: Joi.string().min(0).optional()
 });

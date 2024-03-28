@@ -12,13 +12,14 @@ import AuthService from "../auth/auth.service";
 import TokenService from "../token/token.service";
 /* Import configs */
 import APP_CONFIG from "../../configs/app";
+import { generateRandomCode } from "../../utils/number";
 
 export default class UserService extends ServiceWithContext {
-  get(where?: WhereOptions<UserAttributes>) {
+  async get(where?: WhereOptions<UserAttributes>) {
     return Database.users.findOne({
       where,
       transaction: this.context?.transaction
-    });
+    }).then((res) => res?.toJSON());
   }
 
   async create(data: any) {
@@ -26,6 +27,7 @@ export default class UserService extends ServiceWithContext {
     const hashedPassword = AuthService.hashPassword(password);
     const registedUser = await Database.users.create({
       ...userInfo,
+      code: generateRandomCode(),
       password: hashedPassword
     }, {
       transaction: this.context?.transaction

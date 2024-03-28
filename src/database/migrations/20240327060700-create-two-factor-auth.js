@@ -19,6 +19,15 @@ module.exports = {
         onDelete: 'NO ACTION',
         onUpdate: 'CASCADE'
       },
+      setup_code: {
+        type: Sequelize.STRING(50),
+        allowNull: false
+      },
+      is_enable: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       secret: {
         type: Sequelize.STRING(255),
         allowNull: false

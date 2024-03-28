@@ -18,6 +18,7 @@ const APP_CONFIG = {
   JWT: {
     SECRET: process.env.SECRET_KEY,
     JWT_ALGORITHM: process.env.JWT_ALGORITHM,
+    MAX_AGE_ACCESS_TOKEN: 15 * 60, // 15 minutes
     MAX_AGE_TOKEN_ACTION: 5 * 60 // 5 minutes
   },
   NODEMAILER: {

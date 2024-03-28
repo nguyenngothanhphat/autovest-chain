@@ -34,7 +34,7 @@ export const activate = (req: Request, res: Response) => withServiceContext(asyn
   const userService = new UserService(context);
 
   await Promise.all([
-    userService.update({ is_valid: false }, user_id),
+    userService.update({ is_active: true }, user_id),
     tokenService.invalidateToken(token_id)
   ])
 
