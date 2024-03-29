@@ -10,20 +10,18 @@ import TwoFactorAuthService from "../../services/two-factor-auth/two-factor-auth
 
 export const upsertTwoFactor = (req: Request, res: Response) => withServiceContext(async (context, commit) => {
   const { user: { payload: { user_id } }, body } = req;
-  const { secret, two_fa_code } = body;
+  const { setup_code, two_fa_code } = body;
   const twoFactorAuthService = new TwoFactorAuthService(context);
   const twoFactorAuth = await twoFactorAuthService.get({ user_id });
   if (twoFactorAuth) {
-    const verified = twoFactorAuthService.verifyTwoFactorCode(JSON.parse(twoFactorAuth.secret), two_fa_code);
-    console.log('twoFactorAuth.setup_code: ', twoFactorAuth.setup_code);
-    console.log('verified1: ', verified);
+    const verified = twoFactorAuthService.verifyTwoFactorCode(twoFactorAuth.setup_code, two_fa_code);
     if (!verified) throw new ResponseError(BAD_REQUEST, ERROR_CODE.COMMON_SETTING_FAIL);
+    await twoFactorAuthService.update({ ...body, user_id }, setup_code);
   } else {
-    const verified = twoFactorAuthService.verifyTwoFactorCode(JSON.parse(secret), two_fa_code);
-    console.log('verified2: ', verified);
+    const verified = twoFactorAuthService.verifyTwoFactorCode(setup_code, two_fa_code);
     if (!verified) throw new ResponseError(BAD_REQUEST, ERROR_CODE.COMMON_SETTING_FAIL);
+    await twoFactorAuthService.create({ ...body, user_id });
   }
-  await twoFactorAuthService.upsert({ ...body, user_id });
   await commit();
   res.sendStatus(ACCEPTED);
 });

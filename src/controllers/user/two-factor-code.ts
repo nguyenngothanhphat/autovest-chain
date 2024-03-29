@@ -1,5 +1,8 @@
+/* Import packages */
 import { Request, Response } from "express";
+/* Import configs */
 import { withServiceContext } from "../../utils/withServiceContext";
+/* Import services */
 import TwoFactorAuthService from "../../services/two-factor-auth/two-factor-auth.service";
 
 export const twoFactorCode = (req: Request, res: Response) => withServiceContext(async (context, commit) => {
@@ -8,7 +11,7 @@ export const twoFactorCode = (req: Request, res: Response) => withServiceContext
   const twoFactorAuthService = new TwoFactorAuthService();
   const twoFaExists: any =  twoFactorAuthService.get({ user_id });
 
-  const { barcode_image_url, setup_code, secret } = await twoFactorAuthService.generateTwoFactorCode(username);
+  const { barcode_image_url, setup_code } = await twoFactorAuthService.generateTwoFactorCode(username);
 
   const exists = await twoFaExists;
 
@@ -16,7 +19,6 @@ export const twoFactorCode = (req: Request, res: Response) => withServiceContext
     res.json({
       barcode_image_url,
       setup_code,
-      secret: exists.secret,
       is_enable: exists.is_enable
     });
   }
@@ -24,7 +26,6 @@ export const twoFactorCode = (req: Request, res: Response) => withServiceContext
   res.json({
     barcode_image_url,
     setup_code,
-    secret,
     is_enable: false
-  })
+  });
 })

@@ -1,10 +1,13 @@
+/* Import packages */
 import { Request, Response, NextFunction } from "express";
-import { ResponseError } from "../classes/ResponseError";
 import { UNAUTHORIZED } from "http-status";
+import { isEmpty } from 'lodash';
+/* Import configs */
+import { ResponseError } from "../classes/ResponseError";
 import ERROR_CODE from "../constants/ErrorCode";
 import TokenError from "../constants/TokenError";
 import { HeadersWithAuthorization } from "../types/auth";
-import { isEmpty } from 'lodash';
+/* Import services */
 import AuthService from "../services/auth/auth.service";
 
 export const authenticated = (req: Request, res: Response, next: NextFunction) => {
@@ -22,6 +25,6 @@ export const authenticated = (req: Request, res: Response, next: NextFunction) =
     if (error?.name === TokenError.TOKEN_EXP_ERROR) {
       throw new ResponseError(UNAUTHORIZED, ERROR_CODE.AUTH_TOKEN_EXP);
     }
-    throw error
+    throw error;
   }
 }

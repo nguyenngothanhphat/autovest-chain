@@ -28,10 +28,6 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
-      secret: {
-        type: Sequelize.STRING(255),
-        allowNull: false
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

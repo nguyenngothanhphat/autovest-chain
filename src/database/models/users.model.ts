@@ -26,6 +26,10 @@ export class User extends BaseModel<UserAttributes> implements UserAttributes {
 
   static associate(models: Sequelize['models']) {
     // define association here
+    User.hasOne(models.identities, {
+      foreignKey: "user_id",
+      sourceKey: "user_id",
+    })
   }
 }
 

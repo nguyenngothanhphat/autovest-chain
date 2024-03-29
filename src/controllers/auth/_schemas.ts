@@ -38,3 +38,29 @@ export const registerSchema = Joi.object({
   }),
   referral_code: Joi.string().min(0).optional()
 });
+
+export const changePasswordSchema = Joi.object({
+  password: Joi.string().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_PASSWORD,
+    'any.required': ERROR_CODE.AUTH_MISSING_PASSWORD
+  }),
+  new_password: Joi.string().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_NEW_PASSWORD,
+    'any.required': ERROR_CODE.AUTH_MISSING_NEW_PASSWORD
+  })
+});
+
+export const initForgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_EMAIL,
+    'any.required': ERROR_CODE.AUTH_MISSING_EMAIL,
+    'string.email': ERROR_CODE.AUTH_INVALID_EMAIL
+  })
+})
+
+export const forgotPasswordSchema = Joi.object({
+  new_password: Joi.string().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_NEW_PASSWORD,
+    'any.required': ERROR_CODE.AUTH_MISSING_NEW_PASSWORD
+  })
+})

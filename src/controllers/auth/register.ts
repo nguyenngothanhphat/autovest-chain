@@ -4,6 +4,7 @@ import { BAD_REQUEST } from "http-status";
 import ERROR_CODE from "../../constants/ErrorCode";
 import { ResponseError } from "../../classes/ResponseError";
 import { withServiceContext } from "../../utils/withServiceContext";
+import { buildActivateAccountHref } from "../../utils/auth";
 /* Import services */
 import AuthService from "../../services/auth/auth.service";
 import UserService from "../../services/user/user.service";
@@ -32,7 +33,7 @@ export const register = (req: Request, res: Response, next: NextFunction) => wit
   res.locals = {
     email: created.email,
     username: body.username,
-    activeUrl: `http://localhost:4000/auth/activate?token=${created.token}`
+    activeUrl: buildActivateAccountHref(created.token)
   }
 
   next();

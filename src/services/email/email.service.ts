@@ -49,9 +49,29 @@ export default class EmailService {
       to: email,
       subject: '[AIC] Confirm your email address',
       html: `
-        Your ID: ${data.username}
+        Your ID: ${data.username} <br />
         Link active: ${data.activeUrl}
       `
-    })
+    });
+  }
+
+  async sendResetPasswordEmail(email: string, data: {
+    username: string,
+    activeUrl: string
+  }) {
+    await this.sendEmail({
+      to: email,
+      subject: '[AIC] Reset Your Password',
+      html: `
+        <h2>Reset Your Password</h2>
+        <p>Dear, <b>${data.username}</b></p>
+        <p>You've requested to reset the password linked with your AIC account.</p>
+        <p>To confirm your request, please click below button</p>
+        <a href='${data.activeUrl}'>Click to confirm</a>
+        <p>or you can access this link:</p>
+        <p>${data.activeUrl}</p>
+        <p>The reset password request will be valid for 30 minutes. Please do not share this email with anyone.</p>
+      `
+    });
   }
 }

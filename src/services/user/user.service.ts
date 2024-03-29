@@ -1,5 +1,5 @@
 /* Import packages */
-import { WhereOptions } from "sequelize";
+import { WhereOptions, FindOptions } from "sequelize";
 import { v4 as uuid } from "uuid";
 /* Import databases */
 import Database from "../../database";
@@ -15,40 +15,40 @@ import APP_CONFIG from "../../configs/app";
 import { generateRandomCode } from "../../utils/number";
 
 export default class UserService extends ServiceWithContext {
-  async get(where?: WhereOptions<UserAttributes>) {
+  async get(where?: WhereOptions<UserAttributes>, options?: FindOptions<UserAttributes>) {
     return Database.users.findOne({
       where,
+      ...options,
       transaction: this.context?.transaction
     }).then((res) => res?.toJSON());
   }
 
   async create(data: any) {
     const { username, password, ...userInfo } = data;
-    const hashedPassword = AuthService.hashPassword(password);
+    const authService = new AuthService();
+    const hashedPassword = authService.hashPassword(password);
     const registedUser = await Database.users.create({
       ...userInfo,
-      code: generateRandomCode(),
-      password: hashedPassword
+      code: generateRandomCode()
     }, {
       transaction: this.context?.transaction
     }).then((res) => res.toJSON());
     const { user_id } = registedUser;
     await Database.identities.create({
-      user_id, username, password
+      user_id, username, password: hashedPassword
     }, {
       transaction: this.context?.transaction
     });
     const token_id = uuid();
-    const createdToken = await Database.tokens.create({
+    const tokenService = new TokenService();
+    const createdToken = await tokenService.create({
       token_id,
       action: CommonTokenAction.ActivateAccount,
-      token: TokenService.generateToken(
+      token: tokenService.generateToken(
         { token_id, user_id, action: CommonTokenAction.ActivateAccount },
         APP_CONFIG.JWT.MAX_AGE_TOKEN_ACTION
       )
-    }, {
-      transaction: this.context?.transaction
-    }).then((res) => res.toJSON());
+    });
     return {
       ...registedUser,
       token: createdToken.token

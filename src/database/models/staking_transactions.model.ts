@@ -3,18 +3,18 @@ import { Sequelize, DataTypes } from "sequelize";
 import makeModel from "../makeModel";
 import BaseModel from '../BaseModel';
 
-export interface TwoFactorAuthAttributes {
-  two_fa_auth_id: string;
+export interface StakingTransactionAttributes {
+  staking_transaction_id: string;
   user_id: string;
-  setup_code: string;
-  is_enable: boolean;
+  amount: number;
+  level: number;
 }
 
-export class TwoFactorAuth extends BaseModel<TwoFactorAuthAttributes> implements TwoFactorAuthAttributes {
-  two_fa_auth_id!: string;
+export class StakingTransaction extends BaseModel<StakingTransactionAttributes> implements StakingTransactionAttributes {
+  staking_transaction_id!: string;
   user_id!: string;
-  setup_code!: string;
-  is_enable!: boolean;
+  amount!: number;
+  level!: number;
 
   static associate(models: Sequelize['models']) {
     // define association here
@@ -22,8 +22,8 @@ export class TwoFactorAuth extends BaseModel<TwoFactorAuthAttributes> implements
 }
 
 export default makeModel((sequelize) => {
-  TwoFactorAuth.init({
-    two_fa_auth_id: {
+  StakingTransaction.init({
+    staking_transaction_id: {
       type: DataTypes.UUID(),
       primaryKey: true,
       allowNull: false,
@@ -33,21 +33,19 @@ export default makeModel((sequelize) => {
       type: DataTypes.UUID(),
       allowNull: false
     },
-    setup_code: {
-      type: DataTypes.STRING(255),
+    amount: {
+      type: DataTypes.DOUBLE(),
       allowNull: false
     },
-    is_enable: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
+    level: {
+      type: DataTypes.INTEGER(),
+      allowNull: false
     }
   }, {
     sequelize,
-    modelName: 'two_factor_auth',
+    modelName: 'staking_transactions',
     createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    freezeTableName: true
+    updatedAt: 'updated_at'
   });
-  return TwoFactorAuth;
+  return StakingTransaction;
 })

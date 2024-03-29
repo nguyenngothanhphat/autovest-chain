@@ -1,3 +1,4 @@
+/* Import packages */
 import { Router } from "express";
 
 export type RouteFactory = (router: Router) => void;

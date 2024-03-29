@@ -6,7 +6,7 @@ import { ServiceWithContext } from '../core/ServiceWithContent';
 import APP_CONFIG from '../../configs/app';
 
 export default class TokenService extends ServiceWithContext {
-  static generateToken(data: any, maxAge: number) {
+  generateToken(data: any, maxAge: number) {
     return jwt.sign({
       payload: data
     }, APP_CONFIG.JWT.SECRET as string, {
@@ -19,6 +19,14 @@ export default class TokenService extends ServiceWithContext {
     return jwt.verify(token, APP_CONFIG.JWT.SECRET as string, {
       algorithms: [APP_CONFIG.JWT.JWT_ALGORITHM as jwt.Algorithm]
     });
+  }
+
+  async create(data: any) {
+    return Database.tokens.create({
+      ...data
+    }, { 
+      transaction: this.context?.transaction 
+    }).then((res) => res.toJSON());
   }
 
   async isTokenValid(token: string) {

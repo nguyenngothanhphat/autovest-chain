@@ -1,3 +1,4 @@
 export enum CommonTokenAction {
-  ActivateAccount = 'ActivateAccount'
+  ActivateAccount = 'ActivateAccount',
+  ForgotPassword = 'ForgotPassword'
 }

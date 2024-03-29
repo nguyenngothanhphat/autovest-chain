@@ -1,11 +1,12 @@
 /* Import packages */
 import { WhereOptions } from "sequelize";
-import speakeasy, { GeneratedSecret } from "speakeasy";
+import speakeasy from "speakeasy";
 import qrCode from "qrcode";
 /* Import databases */
 import Database from "../../database";
 /* Import configs */
 import { ServiceWithContext } from "../core/ServiceWithContent";
+import APP_CONFIG from "../../configs/app";
 
 export default class TwoFactorAuthService extends ServiceWithContext {
   async generateTwoFactorCode(label: string) {
@@ -14,7 +15,7 @@ export default class TwoFactorAuthService extends ServiceWithContext {
     const otpAuthUrl = speakeasy.otpauthURL({
       secret: secret.ascii,
       label: label,
-      issuer: 'Autovest-Chain',
+      issuer: APP_CONFIG._2FA._2FA_ISSUER,
     });
 
     const imageUrl = await qrCode.toDataURL(otpAuthUrl);
@@ -22,13 +23,12 @@ export default class TwoFactorAuthService extends ServiceWithContext {
     return { 
       barcode_image_url: imageUrl,
       setup_code: secret.base32,
-      secret: JSON.stringify(secret)
     }
   }
   
-  verifyTwoFactorCode(secret: GeneratedSecret, twoFACode: string) {
+  verifyTwoFactorCode(secret: string, twoFACode: string) {
     return speakeasy.totp.verify({
-      secret: secret.base32,
+      secret: secret,
       encoding: 'base32',
       token: twoFACode,
       window: 1
@@ -42,12 +42,19 @@ export default class TwoFactorAuthService extends ServiceWithContext {
     }).then((res) => res?.toJSON());
   }
 
-  upsert(data: any) {
-    return Database.two_factor_auth.upsert({
+  create(data: any) {
+    return Database.two_factor_auth.create({
       ...data
     }, {
-      validate: true,
-      conflictFields: ["two_fa_auth_id", "user_id"],
+      transaction: this.context?.transaction
+    });
+  }
+
+  update(data: any, setup_code: string) {
+    return Database.two_factor_auth.update({
+      ...data
+    }, {
+      where: { setup_code },
       transaction: this.context?.transaction
     });
   }

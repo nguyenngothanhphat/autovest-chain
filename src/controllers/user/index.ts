@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validate } from "../../middlewares/validate";
-import { authenticated } from "../../middlewares/authenticated"
+import { authenticated } from "../../middlewares/authenticated";
 import registerController from "../../utils/registerController";
 import { upsertTwoFactorSchema } from "./_schemas";
 import { twoFactorCode } from "./two-factor-code";
