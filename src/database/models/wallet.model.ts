@@ -20,3 +20,34 @@ export class Wallet extends BaseModel<WalletAttributes> implements WalletAttribu
     // define association here
   }
 }
+
+export default makeModel((sequelize) => {
+  Wallet.init({
+    wallet_id: {
+      type: DataTypes.UUID(),
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: () => uuidv4(),
+    },
+    address: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    private_key: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    mnemonic: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    }
+  }, {
+    sequelize,
+    modelName: 'wallets',
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
+    paranoid: true,
+  });
+  return Wallet;
+})

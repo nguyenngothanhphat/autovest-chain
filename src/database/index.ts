@@ -68,4 +68,8 @@ export default class Database {
   static get tokens() {
     return this.sequelize.models.tokens;
   }
+
+  static get wallets() {
+    return this.sequelize.models.wallets;
+  }
 }

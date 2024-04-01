@@ -48,6 +48,14 @@ export default class AuthService extends ServiceWithContext {
     }).then((res) => res?.toJSON());
   }
 
+  create(data: any) {
+    return Database.identities.create({
+      ...data
+    }, {
+      transaction: this.context?.transaction
+    })
+  }
+
   update(data: any, identitiy_id: string) {
     return Database.identities.update({
       ...data

@@ -26,6 +26,9 @@ const ERROR_CODE = {
 
   /* User */
   USER_NOT_EXISTS: "user.notExists",
+
+  /* Wallet */
+  WALLET_NOT_EXISTS: "wallet.notExists",
 }
 
 export default ERROR_CODE;

@@ -1,6 +1,7 @@
 /* Import packages */
 import { WhereOptions, FindOptions } from "sequelize";
 import { v4 as uuid } from "uuid";
+import { ethers } from "ethers";
 /* Import databases */
 import Database from "../../database";
 import { ServiceWithContext } from "../core/ServiceWithContent";
@@ -10,6 +11,7 @@ import { CommonTokenAction } from "../../constants/Enums";
 /* Import services */
 import AuthService from "../auth/auth.service";
 import TokenService from "../token/token.service";
+import WalletService from "../wallet/wallet.service";
 /* Import configs */
 import APP_CONFIG from "../../configs/app";
 import { generateRandomCode } from "../../utils/number";
@@ -36,9 +38,18 @@ export default class UserService extends ServiceWithContext {
     const { user_id } = registedUser;
     await Database.identities.create({
       user_id, username, password: hashedPassword
-    }, {
+    } , {
       transaction: this.context?.transaction
     });
+    const wallet = ethers.Wallet.createRandom();
+    await Database.wallets.create({
+      address: wallet.address.toString(),
+      mnemonic: wallet.mnemonic?.phrase.toString(),
+      private_key: wallet.privateKey.toString(),
+      user_id: user_id
+    }, {
+      transaction: this.context?.transaction
+    })
     const token_id = uuid();
     const tokenService = new TokenService();
     const createdToken = await tokenService.create({
