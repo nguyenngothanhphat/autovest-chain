@@ -11,6 +11,7 @@ const APP_CONFIG = {
   HASH_ALGORITHM: process.env.ALGORITHM,
   FRONTEND_URL: process.env.FRONTEND_URL,
   SERVER_URL: process.env.SERVER_URL,
+  TOKEN_SYMBOL_SYSTEM: process.env.TOKEN_SYMBOL_SYSTEM,
   CORS: {
     origin: corsOrigin,
     credentials: true,

@@ -5,6 +5,7 @@ import BaseModel from '../BaseModel';
 
 export interface WalletAttributes {
   wallet_id: string;
+  user_id: string;
   address: string;
   private_key: string;
   mnemonic: string;
@@ -12,12 +13,20 @@ export interface WalletAttributes {
 
 export class Wallet extends BaseModel<WalletAttributes> implements WalletAttributes {
   wallet_id!: string;
+  user_id!: string;
   address!: string;
   private_key!: string;
   mnemonic!: string;
 
   static associate(models: Sequelize['models']) {
     // define association here
+    Wallet.belongsTo(models.users, {
+      foreignKey: "user_id"
+    });
+    Wallet.hasMany(models.wallet_crypto_tokens, {
+      foreignKey: "wallet_id",
+      sourceKey: "wallet_id"
+    });
   }
 }
 
@@ -29,9 +38,14 @@ export default makeModel((sequelize) => {
       allowNull: false,
       defaultValue: () => uuidv4(),
     },
+    user_id: {
+      type: DataTypes.UUID(),
+      allowNull: false
+    },
     address: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     private_key: {
       type: DataTypes.STRING(255),

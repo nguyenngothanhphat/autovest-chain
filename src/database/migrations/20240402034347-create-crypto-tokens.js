@@ -1,36 +1,28 @@
 const {v4: uuidv4} = require('uuid');
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('wallets', {
-      wallet_id: {
+    await queryInterface.createTable('crypto_tokens', {
+      crypto_token_id: {
         type: Sequelize.UUID(36),
         primaryKey: true,
         allowNull: false,
         defaultValue: uuidv4()
       },
-      user_id: {
-        type: Sequelize.UUID(36),
-        allowNull: false,
-        foreignKey: true,
-        references: {
-          model: 'users',
-          key: 'user_id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      },
-      address: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        unique: true
-      },
-      private_key: {
-        type: Sequelize.STRING(255),
+      symbol: {
+        type: Sequelize.STRING(100),
         allowNull: false
       },
-      mnemonic: {
+      name: {
+        type: Sequelize.STRING(100),
+        allowNull: true
+      },
+      description: {
+        type: Sequelize.TEXT(),
+        allowNull: true
+      },
+      memo: {
         type: Sequelize.STRING(255),
-        allowNull: false
+        allowNull: true
       },
       created_at: {
         allowNull: false,
@@ -48,6 +40,6 @@ module.exports = {
   },
 
   async down (queryInterface) {
-    await queryInterface.dropTable('wallets');
+    await queryInterface.dropTable('user_balances');
   }
 };

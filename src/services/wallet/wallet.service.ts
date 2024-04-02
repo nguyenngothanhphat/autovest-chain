@@ -3,28 +3,30 @@ import { WhereOptions } from "sequelize";
 import { ethers } from "ethers";
 /* Import databases */
 import Database from "../../database";
-import { WalletAttributes } from "../../database/models/wallet.model";
+import { WalletAttributes } from "../../database/models/wallets.model";
 /* Import configs */
 import { ServiceWithContext } from "../core/ServiceWithContent";
 
 export default class WalletService extends ServiceWithContext {
   async get(where?: WhereOptions<WalletAttributes>) {
-    return Database.wallets.findOne({
+    const wallet = await Database.wallets.findOne({
       where,
       transaction: this.context?.transaction
-    }).then((res) => res?.toJSON());
+    });
+    return wallet?.toJSON();
   }
 
-  create(user_id: string) {
+  async create(data: any) {
     const wallet = ethers.Wallet.createRandom();
-    return Database.wallets.create({
+    const walletRecord = await Database.wallets.create({
+      ...data,
       address: wallet.address.toString(),
       mnemonic: wallet.mnemonic?.phrase.toString(),
       private_key: wallet.privateKey.toString(),
-      user_id: user_id
     }, {
       transaction: this.context?.transaction
-    })
+    });
+    return walletRecord?.toJSON();
   }
 
   update(data: any, address: string) {

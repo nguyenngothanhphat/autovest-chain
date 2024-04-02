@@ -9,6 +9,9 @@ export interface UserBalanceAttributes {
   money_point: number;
   money_token: number;
   money_usd: number;
+  str_money_point: string;
+  str_money_token: string;
+  str_money_usd: string;
 }
 
 export class UserBalance extends BaseModel<UserBalanceAttributes> implements UserBalanceAttributes {
@@ -17,9 +20,15 @@ export class UserBalance extends BaseModel<UserBalanceAttributes> implements Use
   money_point!: number;
   money_token!: number;
   money_usd!: number;
+  str_money_point!: string;
+  str_money_token!: string;
+  str_money_usd!: string;
 
   static associate(models: Sequelize['models']) {
     // define association here
+    UserBalance.belongsTo(models.users, {
+      foreignKey: "user_id"
+    });
   }
 }
 
@@ -58,6 +67,21 @@ export default makeModel((sequelize) => {
       validate: {
         min: 0,
       }
+    },
+    str_money_point: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      defaultValue: "0.00"
+    },
+    str_money_token: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      defaultValue: "0.00"
+    },
+    str_money_usd: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      defaultValue: "0.00"
     }
   }, {
     sequelize,

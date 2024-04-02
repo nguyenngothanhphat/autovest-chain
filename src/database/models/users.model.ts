@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Sequelize, DataTypes } from "sequelize";
 import makeModel from "../makeModel";
 import BaseModel from '../BaseModel';
+import { Role } from "../../constants/Role";
 
 export interface UserAttributes {
   user_id: string;
@@ -10,6 +11,7 @@ export interface UserAttributes {
   email: string;
   phone_number: string;
   country_code: string;
+  role: Role;
   invest: number;
   is_active: boolean;
 }
@@ -21,6 +23,7 @@ export class User extends BaseModel<UserAttributes> implements UserAttributes {
   email!: string;
   phone_number!: string;
   country_code: string;
+  role!: Role;
   invest: number;
   is_active: boolean;
 
@@ -29,6 +32,16 @@ export class User extends BaseModel<UserAttributes> implements UserAttributes {
     User.hasOne(models.identities, {
       foreignKey: "user_id",
       sourceKey: "user_id",
+    });
+    User.hasOne(models.user_balances, {
+      foreignKey: "user_id",
+      sourceKey: "user_id",
+      as: "user_balance"
+    });
+    User.hasOne(models.wallets, {
+      foreignKey: "user_id",
+      sourceKey: "user_id",
+      as: "wallet"
     })
   }
 }
@@ -62,6 +75,11 @@ export default makeModel((sequelize) => {
     },
     country_code: {
       type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    role: {
+      type: DataTypes.ENUM("ADMIN", "USER"),
+      defaultValue: "USER",
       allowNull: false
     },
     invest: {

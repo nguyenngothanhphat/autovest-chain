@@ -72,4 +72,16 @@ export default class Database {
   static get wallets() {
     return this.sequelize.models.wallets;
   }
+
+  static get crypto_tokens() {
+    return this.sequelize.models.crypto_tokens;
+  }
+
+  static get user_balances() {
+    return this.sequelize.models.user_balances;
+  }
+
+  static get wallet_crypto_tokens() {
+    return this.sequelize.models.wallet_crypto_tokens;
+  }
 }

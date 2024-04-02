@@ -38,6 +38,11 @@ module.exports = {
         onDelete: 'NO ACTION',
         onUpdate: 'CASCADE'
       },
+      role: {
+        type: Sequelize.ENUM("ADMIN", "USER"),
+        defaultValue: "USER",
+        allowNull: false
+      },
       invest: {
         type: Sequelize.INTEGER(),
         allowNull: true,

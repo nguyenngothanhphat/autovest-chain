@@ -29,6 +29,10 @@ const ERROR_CODE = {
 
   /* Wallet */
   WALLET_NOT_EXISTS: "wallet.notExists",
+
+  /* Crypto Token */
+  CRYPTO_TOKEN_SYMBOL_EXISTS: "cryptoToken.symbolExists",
+  CRYPTO_TOKEN_NOT_EXISTS: "cryptoToken.notExists"
 }
 
 export default ERROR_CODE;

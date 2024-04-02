@@ -30,13 +30,14 @@ export default class TokenService extends ServiceWithContext {
   }
 
   async isTokenValid(token: string) {
-    return Database.tokens.findOne({
+    const tokenRecord = await Database.tokens.findOne({
       where: {
         token,
         is_valid: true
       },
       transaction: this.context?.transaction
-    }).then((res) => res?.toJSON());
+    });
+    return tokenRecord?.toJSON();
   }
 
   invalidateToken(token_id: string) {

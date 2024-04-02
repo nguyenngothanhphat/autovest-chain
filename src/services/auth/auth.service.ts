@@ -41,11 +41,12 @@ export default class AuthService extends ServiceWithContext {
   }
 
   async get(where?: WhereOptions<IdentityAttributes>) {
-    return Database.identities.findOne({
+    const identity = await Database.identities.findOne({
       where,
       paranoid: false,
       transaction: this.context?.transaction
-    }).then((res) => res?.toJSON());
+    });
+    return identity?.toJSON();
   }
 
   create(data: any) {
