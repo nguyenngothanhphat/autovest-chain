@@ -2,8 +2,9 @@
   "name": "autovest-chain",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
+    "typecheck:live": "./node_modules/.bin/tsc --noEmit -w",
     "start": "node build/index.js",
     "serve": "nodemon --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register src/index.ts'",
     "model:make": "npx sequelize-cli model:generate",
@@ -11,7 +12,11 @@
     "migrate:make": "npx sequelize-cli migration:generate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seed": "npx sequelize-cli db:seed:all",
-    "seed:make": "npx sequelize-cli seed:generate"
+    "seed:make": "npx sequelize-cli seed:generate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn clean && ./node_modules/.bin/tsc && yarn copy-files",
+    "clean": "rm -rf ./build",
+    "yarn clean && ./node_modules/.bin/tsc && yarn copy-files": "yarn clean && ./node_modules/.bin/tsc && yarn copy-files && yarn run sentry:sourcemaps"
   },
   "author": "",
   "license": "ISC",
