@@ -10,6 +10,15 @@ const hashPassword = (challenge) => {
     .digest("base64");
 }
 
+const generateRandomCode = () => {
+  let code = '';
+  for (let i = 0; i < 9; i++) {
+    code += Math.floor(Math.random() * 10);
+  }
+  return code;
+}
+
+
 let adminId
 module.exports = {
   async up (queryInterface) {
@@ -19,10 +28,12 @@ module.exports = {
       const adminUser = {
         user_id: adminId,
         fullname: 'Admin',
+        code: generateRandomCode(),
         email: 'thanhphat19@gmail.com',
         phone_number: '0000000000',
         role: 'ADMIN',
         email: 'thanhphat19@gmail.com',
+        country_code: 'US',
         is_active: true,
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
         updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
