@@ -117,6 +117,6 @@ uploads/
 # MacOs
 .DS_Store
 
-src/docs/**/*
+# src/docs/**/*
 # Sentry Auth Token
 .sentryclirc

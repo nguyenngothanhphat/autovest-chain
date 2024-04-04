@@ -11,6 +11,7 @@ const ERROR_CODE = {
   AUTH_MISSING_NEW_PASSWORD: "auth.missingNewPassword",
   AUTH_MISSING_EMAIL: "auth.missingEmail",
   AUTH_MISSING_TWO_FACTOR_CODE: "auth.missingTwoFactorCode",
+  AUTH_MISSING_REFRESH_TOKEN: "auth.missingRefreshToken",
   AUTH_INVALID_EMAIL: "auth.invalidEmail",
   AUTH_IDENTIFIER_EXISTS: "auth.identifierExists",
   AUTH_EMAIL_EXISTS: "auth.emailExists",

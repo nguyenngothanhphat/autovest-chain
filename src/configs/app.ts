@@ -8,6 +8,7 @@ const corsOrigin: CORSOrigin | CORSOrigin[] =
 const APP_CONFIG = {
   ENV,
   PORT: 4000,
+  APP_NAME: process.env.APP_NAME,
   HASH_ALGORITHM: process.env.ALGORITHM,
   FRONTEND_URL: process.env.FRONTEND_URL,
   SERVER_URL: process.env.SERVER_URL,
@@ -22,6 +23,7 @@ const APP_CONFIG = {
     SECRET: process.env.SECRET_KEY,
     JWT_ALGORITHM: process.env.JWT_ALGORITHM,
     MAX_AGE_ACCESS_TOKEN: 15 * 60, // 15 minutes
+    MAX_AGE_REFRESH_TOKEN: 30 * 24 * 60 * 60, // 1 months
     MAX_AGE_TOKEN_ACTION: 5 * 60 // 5 minutes
   },
   NODEMAILER: {

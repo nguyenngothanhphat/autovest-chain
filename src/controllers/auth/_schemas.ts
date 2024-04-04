@@ -64,3 +64,10 @@ export const forgotPasswordSchema = Joi.object({
     'any.required': ERROR_CODE.AUTH_MISSING_NEW_PASSWORD
   })
 })
+
+export const refreshTokenSchema = Joi.object({
+  refreshToken: Joi.string().required().messages({
+    'string.empty': ERROR_CODE.AUTH_MISSING_REFRESH_TOKEN,
+    'any.required': ERROR_CODE.AUTH_MISSING_REFRESH_TOKEN
+  })
+})

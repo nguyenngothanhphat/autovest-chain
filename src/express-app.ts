@@ -13,6 +13,7 @@ import { ResponseError } from "./classes/ResponseError";
 import registerRoutes from "./registerRoutes";
 import { flattenObj } from "./utils/object";
 import { isProduction } from "./utils/common";
+import { generateDocs } from "./utils/generateDocs";
 
 // APP_CONFIG values check
 const flattenConfigValues = flattenObj(APP_CONFIG)
@@ -59,6 +60,9 @@ export async function startExpressApp() {
   });
 
   app.use('/', registerRoutes());
+
+  /* Swagger */
+  generateDocs(app)
 
   app.use((err: ResponseError | Error, req: Request, res: Response, next: NextFunction) => {
     if (res.writableEnded) return;

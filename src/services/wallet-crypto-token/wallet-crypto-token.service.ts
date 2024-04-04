@@ -1,4 +1,4 @@
-import { create } from '../../controllers/crypto-token/create';
+import { create } from '../../controllers/token/create';
 /* Import databases */
 import Database from "../../database";
 /* Import configs */

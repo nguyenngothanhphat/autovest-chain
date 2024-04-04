@@ -49,12 +49,13 @@ export default class AuthService extends ServiceWithContext {
     return identity?.toJSON();
   }
 
-  create(data: any) {
-    return Database.identities.create({
+  async create(data: any) {
+    const identity = await Database.identities.create({
       ...data
     }, {
       transaction: this.context?.transaction
-    })
+    });
+    return identity;
   }
 
   update(data: any, identitiy_id: string) {

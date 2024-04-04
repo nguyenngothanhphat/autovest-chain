@@ -6,10 +6,10 @@ import pick from "lodash/pick";
 import { withServiceContext } from "../../utils/withServiceContext";
 import { ResponseError } from "../../classes/ResponseError";
 import ERROR_CODE from "../../constants/ErrorCode";
-import APP_CONFIG from "../../configs/app";
 /* Import services */
 import AuthService from "../../services/auth/auth.service";
 import UserService from "../../services/user/user.service";
+import SessionService from "../../services/session/session.service";
 import TwoFactorAuthService from "../../services/two-factor-auth/two-factor-auth.service";
 
 export const login = (req: Request, res: Response) => withServiceContext(async (context, commit) => {
@@ -28,8 +28,10 @@ export const login = (req: Request, res: Response) => withServiceContext(async (
     if (!verified) throw new ResponseError(FORBIDDEN, ERROR_CODE.AUTH_ACCESS_DENIED);
   }
   const userInfo = { ...user, ...identity };
-  const tokenPayload = pick(userInfo, 'user_id', 'code', 'username', 'fullname', 'email');
-  const access_token = authService.generateToken({ ...tokenPayload }, APP_CONFIG.JWT.MAX_AGE_ACCESS_TOKEN);
+  const tokenPayload = pick(userInfo, 'user_id', 'code', 'username', 'fullname', 'email', 'role');
+  const sessionService = new SessionService(context);
+  const createdSession = await sessionService.createSession(tokenPayload);
   await commit();
-  res.json({ user, access_token });
+  const { access_token, refresh_token } = createdSession.dataValues;
+  res.json({ user, access_token, refresh_token });
 });

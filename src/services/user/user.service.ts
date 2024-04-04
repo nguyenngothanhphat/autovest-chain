@@ -1,6 +1,7 @@
 /* Import packages */
 import { WhereOptions, FindOptions, Model } from "sequelize";
 import { v4 as uuid } from "uuid";
+import { ethers } from "ethers";
 /* Import databases */
 import Database from "../../database";
 import { UserAttributes } from "../../database/models/users.model";
@@ -10,10 +11,7 @@ import { CommonTokenAction } from "../../constants/Enums";
 /* Import services */
 import AuthService from "../auth/auth.service";
 import TokenService from "../token/token.service";
-import WalletService from "../wallet/wallet.service";
-import UserBalanceService from "../user-balance/user_balance.service";
 import CryptoTokenService from "../crypto-token/crypto-token.service";
-import WalletCryptoTokenService from "../wallet-crypto-token/wallet-crypto-token.service";
 /* Import configs */
 import APP_CONFIG from "../../configs/app";
 import { ServiceWithContext } from "../core/ServiceWithContent";
@@ -45,34 +43,44 @@ export default class UserService extends ServiceWithContext {
     const userJson = registedUser.toJSON();
     const { user_id } = userJson;
 
-    const walletService = new WalletService();
-    const authServicePromise = authService.create({ 
+    const authServicePromise = Database.identities.create({
       user_id,
       username,
       password: hashedPassword
+    }, { transaction: this.context?.transaction });
+    
+    const wallet = ethers.Wallet.createRandom();
+    const walletServicePromise = Database.wallets.create({
+      user_id,
+      address: wallet.address.toString(),
+      mnemonic: wallet.mnemonic?.phrase.toString(),
+      private_key: wallet.privateKey.toString(),
+    }, {
+      transaction: this.context?.transaction
     });
-    const walletServicePromise = walletService.create({ user_id });
-    const userBalanceService = new UserBalanceService();
-    const userBalanceServicePromise = userBalanceService.create({ user_id });
+    const userBalanceServicePromise = Database.user_balances.create({
+      user_id
+    }, { transaction: this.context?.transaction });
     const results = await Promise.all([walletServicePromise, userBalanceServicePromise, authServicePromise]);
 
     const createdWallet: Model<Wallet> = results[0] as Model<Wallet>;
 
     const cryptoTokenService = new CryptoTokenService();
-    const tokenCreationPromises = [];
 
     const defaultTokens = ['USDT', APP_CONFIG.TOKEN_SYMBOL_SYSTEM];
-    const walletCryptoTokenService = new WalletCryptoTokenService();
-    for (const symbol of defaultTokens) {
-    const tokenCreationPromise = cryptoTokenService.get({ symbol }).then(token => {
+    const tokenCreationPromises = defaultTokens.map(async (symbol) => {
+      const token = await cryptoTokenService.get({ symbol });
       if (token) {
-        return walletCryptoTokenService.create({ wallet_id: createdWallet.dataValues.wallet_id, crypto_token_id: token.crypto_token_id });
+        return Database.wallet_crypto_tokens.create({
+          wallet_id: createdWallet.dataValues.wallet_id,
+          crypto_token_id: token.crypto_token_id
+        }, { 
+          transaction: this.context?.transaction
+        })
       }
-    });
-    tokenCreationPromises.push(tokenCreationPromise);
-  }
+    })
 
-  await Promise.all(tokenCreationPromises);
+    await Promise.all(tokenCreationPromises);
 
     const tokenService = new TokenService();
     const token_id = uuid();

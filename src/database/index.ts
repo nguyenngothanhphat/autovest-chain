@@ -61,6 +61,10 @@ export default class Database {
     return this.sequelize.models.users;
   }
 
+  static get user_sessions() {
+    return this.sequelize.models.user_sessions;
+  }
+
   static get two_factor_auth() {
     return this.sequelize.models.two_factor_auth;
   }
